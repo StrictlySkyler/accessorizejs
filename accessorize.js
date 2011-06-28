@@ -5,33 +5,6 @@
 	//For waiting until the document is loaded, jQuery style.
 	var ready,
 		accessorize;
-	//Modern browsers.
-	if (document.addEventListener) {
-		document.addEventListener('DOMContentLoaded', ready, false);
-		//Fallback to window.load, just in case.
-		window.addEventListener('load', accessorize, false);
-	//Old IE event model.
-	} else if (document.attachEvent) {
-		document.attachEvent('onreadystatechange', ready);
-		//See fallback above.
-		window.attachEvent('onload', accessorize);
-	}
-	
-	//Cleanup the listeners once they're called, and call the main function.
-	if (document.addEventListener) {
-		ready = function() {
-			document.removeEventListener('DOMContentLoaded', ready, false);
-			accessorize();
-		};
-	} else if (document.attachEvent) {
-		ready = function() {
-			//Make sure eager IE waits for body to exist.
-			if (document.readyState === 'complete') {
-				document.detachEvent('onreadystatechange', ready);
-				accessorize();
-			}
-		};
-	}
 	
 	accessorize = function() {
 		/****** Variables *****/
@@ -52,6 +25,7 @@
 			everything = document.body.getElementsByTagName('*'),
 			//Declare some things we'll use later.
 			i,
+			j,
 			element,
 			contrastOn = false,
 			invertOn = false,
@@ -66,6 +40,17 @@
 			turnOffInvert,
 			turnOnFont,
 			turnOffFont,
+			//Anything that should be treated as a link.
+			//Might be expanded later.
+			links = ['A'],
+			//All of the content tags.
+			content = ['P','S','I','B','DD','DT','EM','H1','H2','H3','H4','H5','H6','ABBR','CODE','CITE','SAMP','SMALL','STRONG','ADDRESS','BLOCKQUOTE','AUDIO','VIDEO','INPUT','TEXTAREA','BUTTON','SELECT','LEGEND','OPTION','SECTION','ARTICLE','MARK','FIGURE','LABEL','FIGCAPTION','CAPTION','DEL','TR','TH','TD','DT','DD','INS','SUB','SUP','SPAN','PRE','SUMMARY'],
+			//Structural & block-level elements.
+			blocks = ['ASIDE','DIV','SECTION','NAV','TABLE'],
+			//Lists are separate, for making background images visible, if
+			//they're set using custom images as bullets.  Other things might
+			//go here in the future.
+			lists = ['LI'],
 			//Sniff out if we're in IE...
 			ieCheck = /MSIE \d/.exec(navigator.userAgent),
 			//...Check our version if we are...
@@ -125,7 +110,7 @@
 		//	www.yourdomain.com => Default single domain
 		//	subdomain.yourdomain.com => specific subdomain
 		//Prefixed by 'domain=' on any of them.
-		document.cookie = 'domain=localhost';
+		document.cookie = 'domain=github.localhost';
 		
 		//Give the elements some appropriate identification.
 		popup.setAttribute('id', 'popup');
@@ -320,90 +305,42 @@
 				element = everything[i];		
 				if (element.className !== 'accessorizeNode') {
 					//Links are made blue on white, with an underline.
-					if (
-						(element.tagName === 'A')	||
-						(element.parentNode.tagName === 'A')
-						) {
-						element.style.backgroundColor = '#ffffff';
-						element.style.color = '#0000ff';
-						element.style.textDecoration = 'underline';
+					for (j = 0, links.length; j < links.length; j++) {
+						if (
+							(element.tagName === links[j])	||
+							(element.parentNode.tagName === links[j])
+							) {
+							element.style.backgroundColor = '#ffffff';
+							element.style.color = '#0000ff';
+							element.style.textDecoration = 'underline';
+						}
 					}
 					//Content elements are made black on white.
-					if (
-						(element.tagName === 'P')			||
-						(element.tagName === 'S')			||
-						(element.tagName === 'I')			||
-						(element.tagName === 'B')			||
-						(element.tagName === 'DD')			||
-						(element.tagName === 'DT')			||
-						(element.tagName === 'EM')			||
-						(element.tagName === 'H1')			||
-						(element.tagName === 'H2')			||
-						(element.tagName === 'H3')			||
-						(element.tagName === 'H4')			||
-						(element.tagName === 'H5')			||
-						(element.tagName === 'H6')			||
-						(element.tagName === 'ABBR')		||
-						(element.tagName === 'CODE')		||
-						(element.tagName === 'CITE')		||
-						(element.tagName === 'SAMP')		||
-						(element.tagName === 'SMALL')		||
-						(element.tagName === 'STRONG')		||
-						(element.tagName === 'ADDRESS')		||
-						(element.tagName === 'BLOCKQUOTE')	||
-						(element.tagName === 'AUDIO')		||
-						(element.tagName === 'VIDEO')		||
-						(element.tagName === 'INPUT')		||
-						(element.tagName === 'TEXTAREA')	||
-						(element.tagName === 'BUTTON')		||
-						(element.tagName === 'SELECT')		||
-						(element.tagName === 'LEGEND')		||
-						(element.tagName === 'OPTION')		||
-						(element.tagName === 'SECTION')		||
-						(element.tagName === 'ARTICLE')		||
-						(element.tagName === 'MARK')		||
-						(element.tagName === 'FIGURE')		||
-						(element.tagName === 'LABEL')		||
-						(element.tagName === 'FIGCAPTION')	||
-						(element.tagName === 'AUDIO')		||
-						(element.tagName === 'CAPTION')		||
-						(element.tagName === 'DEL')			||
-						(element.tagName === 'TR')			||
-						(element.tagName === 'TH')			||
-						(element.tagName === 'TD')			||
-						(element.tagName === 'DT')			||
-						(element.tagName === 'DD')			||
-						(element.tagName === 'INS')			||
-						(element.tagName === 'SUB')			||
-						(element.tagName === 'SUP')			||
-						(element.tagName === 'SPAN')		||
-						(element.tagName === 'PRE')			||
-						(element.tagName === 'SUMMARY')
-						) {
-						element.style.background = '#ffffff';
-						element.style.color = '#000000';
-						element.style.borderRadius = '3px';
+					for (j = 0, content.length; j < content.length; j++) {
+						if (element.tagName === content[j]) {
+							element.style.background = '#ffffff';
+							element.style.color = '#000000';
+							element.style.borderRadius = '3px';
+						}
 					}
 					//Structural elements are made white, with a faint outline.
 					//Box-shadow is used instead of border, since border will
 					//modify the layout.  Old IE just jusn't get this, since
-					//this many filters are performance intensive.
-					if (
-						(element.tagName === 'ASIDE')	||
-						(element.tagName === 'DIV')		||
-						(element.tagName === 'SECTION')	||
-						(element.tagName === 'NAV')		||
-						(element.tagName === 'TABLE')	
-						) {
-						element.style.background = '#ffffff';
-						element.style.boxShadow = '0 0 0 1px #333333';
+					//this many filters is performance intensive.
+					for (j = 0, blocks.length; j < blocks.length; j++) {
+						if (element.tagName === blocks[i]) {
+							element.style.background = '#ffffff';
+							element.style.boxShadow = '0 0 0 1px #333333';
+						}
 					}
 					//Lists with custom bullets are forced to look
 					//high-contrast.
-					if (element.tagName === 'LI') {
-						element.style.background = '#ffffff';
-						element.style.color = '#000000';
-						element.style.listStyleType = 'disc';
+					for (j = 0, lists.length; j < lists.length; j++) {
+						if (element.tagName === lists[j]) {
+							element.style.background = '#ffffff';
+							element.style.color = '#000000';
+							element.style.listStyleType = 'disc';
+						}
 					}
 				}
 			}
@@ -445,83 +382,35 @@
 			for (i = 0, everything.length; i < everything.length; i++) {
 				element = everything[i];		
 				if (element.className !== 'accessorizeNode') {
-					if (
-						(element.tagName === 'A')	||
-						(element.parentNode.tagName === 'A')
-						) {
-						element.style.backgroundColor = '#000000';
-						element.style.color = '#ffff00';
-						element.style.textDecoration = 'underline';
+					for (j = 0, links.length; j < links.length; j++) {
+						if (
+							(element.tagName === links[j])	||
+							(element.parentNode.tagName === links[j])
+							) {
+							element.style.backgroundColor = '#000000';
+							element.style.color = '#ffff00';
+							element.style.textDecoration = 'underline';
+						}
 					}
-					if (
-						(element.tagName === 'P')			||
-						(element.tagName === 'S')			||
-						(element.tagName === 'I')			||
-						(element.tagName === 'B')			||
-						(element.tagName === 'DD')			||
-						(element.tagName === 'DT')			||
-						(element.tagName === 'EM')			||
-						(element.tagName === 'H1')			||
-						(element.tagName === 'H2')			||
-						(element.tagName === 'H3')			||
-						(element.tagName === 'H4')			||
-						(element.tagName === 'H5')			||
-						(element.tagName === 'H6')			||
-						(element.tagName === 'ABBR')		||
-						(element.tagName === 'CODE')		||
-						(element.tagName === 'CITE')		||
-						(element.tagName === 'SAMP')		||
-						(element.tagName === 'SMALL')		||
-						(element.tagName === 'STRONG')		||
-						(element.tagName === 'ADDRESS')		||
-						(element.tagName === 'BLOCKQUOTE')	||
-						(element.tagName === 'AUDIO')		||
-						(element.tagName === 'VIDEO')		||
-						(element.tagName === 'INPUT')		||
-						(element.tagName === 'TEXTAREA')	||
-						(element.tagName === 'BUTTON')		||
-						(element.tagName === 'SELECT')		||
-						(element.tagName === 'LEGEND')		||
-						(element.tagName === 'OPTION')		||
-						(element.tagName === 'SECTION')		||
-						(element.tagName === 'ARTICLE')		||
-						(element.tagName === 'MARK')		||
-						(element.tagName === 'FIGURE')		||
-						(element.tagName === 'LABEL')		||
-						(element.tagName === 'FIGCAPTION')	||
-						(element.tagName === 'AUDIO')		||
-						(element.tagName === 'CAPTION')		||
-						(element.tagName === 'DEL')			||
-						(element.tagName === 'TR')			||
-						(element.tagName === 'TH')			||
-						(element.tagName === 'TD')			||
-						(element.tagName === 'DT')			||
-						(element.tagName === 'DD')			||
-						(element.tagName === 'INS')			||
-						(element.tagName === 'SUB')			||
-						(element.tagName === 'SUP')			||
-						(element.tagName === 'SPAN')		||
-						(element.tagName === 'PRE')			||
-						(element.tagName === 'SUMMARY')
-						) {
-						element.style.background = '#000000';
-						element.style.color = '#ffffff';
-						element.style.borderRadius = '3px';
+					for (j = 0, content.length; j < content.length; j++) {
+						if (element.tagName === content[j]) {
+							element.style.background = '#000000';
+							element.style.color = '#ffffff';
+							element.style.borderRadius = '3px';
+						}
 					}
-					if (
-						(element.tagName === 'ASIDE')	||
-						(element.tagName === 'DIV')		||
-						(element.tagName === 'SECTION')	||
-						(element.tagName === 'NAV')		||
-						(element.tagName === 'TABLE')	
-						) {
-						element.style.background = '#000000';
-						element.style.boxShadow = '0 0 0 1px #cccccc';
+					for (j = 0, blocks.length; j < blocks.length; j++) {
+						if (element.tagName === blocks[i]) {
+							element.style.background = '#000000';
+							element.style.boxShadow = '0 0 0 1px #cccccc';
+						}
 					}
-					if (element.tagName === 'LI') {
-						element.style.background = '#000000';
-						element.style.color = '#ffffff';
-						element.style.listStyleType = 'disc';
+					for (j = 0, lists.length; j < lists.length; j++) {
+						if (element.tagName === lists[j]) {
+							element.style.background = '#000000';
+							element.style.color = '#ffffff';
+							element.style.listStyleType = 'disc';
+						}
 					}
 				}
 			}
@@ -632,8 +521,8 @@
 			fontBigButton.innerHTML = 'Make Fonts Easier to Read';
 		};
 		
-		//Check to see if these are already enabled on another page, and enable
-		//them here if they are.
+		//Check to see if these are already enabled on another page, and
+		//enable them here if they are.
 		if (contrastCheck) {
 			contrastSwitch();
 		}
@@ -646,5 +535,33 @@
 			fontBigSwitch();	
 		}
 	};
+	
+	//Modern browsers.
+	if (document.addEventListener) {
+		document.addEventListener('DOMContentLoaded', ready, false);
+		//Fallback to window.load, just in case.
+		window.addEventListener('load', accessorize, false);
+	//Old IE event model.
+	} else if (document.attachEvent) {
+		document.attachEvent('onreadystatechange', ready);
+		//See fallback above.
+		window.attachEvent('onload', accessorize);
+	}
+	
+	//Cleanup the listeners once they're called, and call the main function.
+	if (document.addEventListener) {
+		ready = function() {
+			document.removeEventListener('DOMContentLoaded', ready, false);
+			accessorize();
+		};
+	} else if (document.attachEvent) {
+		ready = function() {
+			//Make sure eager IE waits for body to exist.
+			if (document.readyState === 'complete') {
+				document.detachEvent('onreadystatechange', ready);
+				accessorize();
+			}
+		};
+	}
 	
 }());
