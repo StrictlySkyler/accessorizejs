@@ -1,0 +1,58 @@
+<!doctype html>
+<!--[if lt ie 7]> <html lang="en" class="ie ie6 ielte9 ielte8 ielte7 ielte6"> <![endif]-->
+<!--[if ie 7]> <html lang="en" class="ie ie7 ielte9 ielte8 ielte7"> <![endif]-->
+<!--[if ie 8]> <html lang="en" class="ie ie8 ielte9 ielte8"> <![endif]-->
+<!--[if ie 9]> <html lang="en" class="ie ie9 ielte9"> <![endif]-->
+<!--[if gt ie 9]> <html lang="en" class="ie"> <![endif]-->
+<!--[if !ie]><!--> <html lang="en"> <!--<![endif]-->
+	<head>
+		<meta charset="utf-8" />
+		<title>New Document</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<meta name="Keywords" content="" />
+		<meta name="Description" content="" />
+		<link rel="stylesheet" type="text/css" href="" />
+		<!--<script type="text/javascript">
+			(function()
+			{
+				var impl = XMLHttpRequest.prototype.open;
+
+				XMLHttpRequest.prototype.open = function()
+				{
+					if (typeof (this.listener) == "function" && this.listener.apply(this, arguments) !== false)
+						impl.apply(this, arguments);
+				}
+			})();
+		</script>
+		<script type="text/javascript">
+			XMLHttpRequest.prototype.listener = function(method, url, async, user, pass)
+			{
+				alert(url);
+			}
+		</script>-->
+	</head>
+	<body>
+		<div>
+		<a id="accessorize">Accessorize me!</a>
+		</div>
+		<div id="output"></div>
+		<script type="text/javascript" src="accessorize.js"></script>
+		<script type="text/javascript">
+			var output = document.getElementById("output");
+			var xhr = new XMLHttpRequest();
+
+			xhr.onreadystatechange = function()
+			{
+				if (this.readyState != 4)
+					;
+				else if (this.status != 200)
+					output.innerHTML = this.status + " ERROR - " + this.statusText;
+				else
+					output.innerHTML = this.responseText;
+			}
+
+			xhr.open("get", "http://localhost");
+			xhr.send();
+		</script>
+	</body>
+</html>
