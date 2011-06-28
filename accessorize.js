@@ -1,5 +1,5 @@
 (function(){
-	//For future browser optimizations.  (Here's hoping?)
+	//For browser optimizations.  (Where applicable.)
 	'use strict';
 	
 	//For waiting until the document is loaded, jQuery style.
@@ -27,6 +27,7 @@
 			i,
 			j,
 			element,
+			hostname,
 			contrastOn = false,
 			invertOn = false,
 			fontBig = false,
@@ -104,13 +105,26 @@
 			}
 		};
 		
-		//Can be set to whatever scope is appropriate for your organization.
-		//Should contain values such as:
-		//	yourdomain.com => Most permissive, will track between sub-domains
-		//	www.yourdomain.com => Default single domain
-		//	subdomain.yourdomain.com => specific subdomain
-		//Prefixed by 'domain=' on any of them.
-		document.cookie = 'domain=github.localhost';
+		//Try to grab the most universal hostname for the domain on which this
+		//library is implemented, based upon the number of octets in the
+		//domain:
+		//	#		Example				Scope
+		//	1		localhost			Anything on localhost.
+		//	2&3		domain.org			Anything on domain.org + subdomains.
+		//	>3		some.sub.site.org	Only that specific site.
+		//You might modify this to fit your organization specifically, such
+		//as by removing this bit of code, and instead using:
+		//	document.cookie = 'domain=yoursite.org'
+		hostname = (window.location.hostname).split('.')
+		if (hostname.length === 1) {
+			document.cookie = 'domain=' + hostname;
+		} else if (hostname.length === 2) {
+			document.cookie = 'domain=' + hostname[0] + '.' + hostname[1];
+		} else if (hostname.length === 3) {
+			document.cookie = 'domain=' + hostname[1] + '.' + hostname[2];
+		} else {
+			document.cookie = 'domain=' + window.location.hostname;
+		}
 		
 		//Give the elements some appropriate identification.
 		popup.setAttribute('id', 'popup');
