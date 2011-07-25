@@ -2,16 +2,31 @@
 	//For browser optimizations.  (Where applicable.)
 	'use strict';
 	
-	//For waiting until the document is loaded, jQuery style.
+	//Using this later for firing the script when the DOM has finished loading,
+	//as seen in jQuery.
 	var ready,
-		accessorize;
-	
-	accessorize = function() {
-		/****** Variables *****/
-			//Grab the element to which this library is tied; the author suggests
-			//using an anchor tag for semantic purposes, wrapped in a labeled div,
-			//though any element with the appropriate ID should work.  It should
-			//be styled to be high contrast, despite the site appearance otherwise.
+	//Hijack the XHR send method, to ensure that AJAX data added to the DOM
+	//gets any styles activated automatically added to it.
+		sendimpl = XMLHttpRequest.prototype.send,
+	//Check to see if onreadystatechange (RSC) has already been modified, and
+	//modify it with our code if it hasn't.
+		onreadystatechange = function() {
+		//See if the original RSC has been saved, and if it has, merge.
+		if (typeof (onreadystatechange.original) === 'function') {
+			onreadystatechange.original.apply(this, arguments);
+		}
+		//See if the after event behavior has been declared, and merge if it
+		//has.
+		if (typeof (this.onAfterRSCListener) === 'function') {
+			this.onAfterRSCListener.apply(this, arguments);
+		}
+	},
+
+		accessorize = function() {
+		//Grab the element to which this library is tied; the author suggests
+		//using an anchor tag for semantic purposes, wrapped in a labeled div,
+		//though any element with the appropriate ID should work. It should be
+		//styled to be high contrast, despite the site appearance otherwise.
 		var handle = document.getElementById('accessorize'),
 			parent = handle.parentNode,
 			popup = document.createElement('div'),
@@ -78,44 +93,21 @@
 					this.style.boxShadow = '0 0 1px 0 #000000';
 				};
 			
-			},
-			//Modify this later for AJAX elements added after page load.
-			xhrMod = XMLHttpRequest.prototype.open;
-		/***** End Variables *****/
-		
-		//Modify the XHR constructor.
-		//Any time a new request is made, we want to do things to the new elements.
-		XMLHttpRequest.prototype.open = function() {
-			//Check to see if it's already been modified.
-			if (typeof (this.listener) === 'function' && this.listener.apply(this, arguments) !== false) {
-				//If it has, apply our new functionality.
-				xhrMod.apply(this, arguments);
-			}
-		};
-		//To be called when an XHR is made.  Applies styling to new elements.
-		XMLHttpRequest.prototype.listener = function(method, url, async, user, pass) {
-			
-			if (contrastOn) {
-				turnOnContrast();
-			} else if (invertOn) {
-				turnOnInvert();
-			}
-			if (fontBig) {
-				turnOnFont();
-			}
-		};
+			};
 		
 		//Try to grab the most universal hostname for the domain on which this
 		//library is implemented, based upon the number of octets in the
 		//domain:
+		
 		//	#		Example				Scope
 		//	1		localhost			Anything on localhost.
 		//	2&3		domain.org			Anything on domain.org + subdomains.
 		//	>3		some.sub.site.org	Only that specific site.
+		
 		//You might modify this to fit your organization specifically, such
 		//as by removing this bit of code, and instead using:
 		//	document.cookie = 'domain=yoursite.org'
-		hostname = (window.location.hostname).split('.')
+		hostname = (window.location.hostname).split('.');
 		if (hostname.length === 1) {
 			document.cookie = 'domain=' + hostname;
 		} else if (hostname.length === 2) {
@@ -271,6 +263,7 @@
 			if (invertOn) {
 				invertOn = false;
 				invertButton.innerHTML = 'Invert Contrast';
+				document.cookie = 'invertOn=false';
 			}
 		};
 		
@@ -292,6 +285,7 @@
 			if (contrastOn) {
 				contrastOn = false;
 				contrastButton.innerHTML = 'Enable High Contrast';
+				document.cookie = 'contrastOn=false';
 			}
 		};
 		
@@ -548,9 +542,51 @@
 		if (fontCheck) {
 			fontBigSwitch();	
 		}
+		
 	};
 	
-	//Modern browsers.
+	//Set to null because we'll use this to store the original functionality.
+	onreadystatechange.original = null;
+
+	//Hijack the send functionality, which should affect all AJAX calls.
+	XMLHttpRequest.prototype.send = function() {
+		//If the original hasn't been stored, or it doesn't equal our function
+		//above, then save the original browser method and perform the
+		//modification.
+		if (!onreadystatechange.original || this.onreadystatechange !== onreadystatechange) {
+			onreadystatechange.original = this.onreadystatechange;
+			this.onreadystatechange = onreadystatechange;
+		}
+		//Merge our code with the constructor.
+		sendimpl.apply(this, arguments);
+	};
+	
+	//Calling all of the accessibility goodness on all XHR.
+	XMLHttpRequest.prototype.onAfterRSCListener = function() {
+		accessorize();
+	};
+	
+	//When everything is finished loading, fire it all off!
+	//For modern browsers, we remove the listener we add later, and call the
+	//main part of the script.
+	if (document.addEventListener) {
+		ready = function() {
+			document.removeEventListener('DOMContentLoaded', ready, false);
+			accessorize();
+			
+		};
+	//For the old IE event model, we do the same thing.
+	} else if (document.attachEvent) {
+		ready = function() {
+			//Make sure eager IE waits for body to exist.
+			if (document.readyState === 'complete') {
+				document.detachEvent('onreadystatechange', ready);
+				accessorize();
+			}
+		};
+	}
+	
+	//Modern browsers' event model.
 	if (document.addEventListener) {
 		document.addEventListener('DOMContentLoaded', ready, false);
 		//Fallback to window.load, just in case.
@@ -562,20 +598,6 @@
 		window.attachEvent('onload', accessorize);
 	}
 	
-	//Cleanup the listeners once they're called, and call the main function.
-	if (document.addEventListener) {
-		ready = function() {
-			document.removeEventListener('DOMContentLoaded', ready, false);
-			accessorize();
-		};
-	} else if (document.attachEvent) {
-		ready = function() {
-			//Make sure eager IE waits for body to exist.
-			if (document.readyState === 'complete') {
-				document.detachEvent('onreadystatechange', ready);
-				accessorize();
-			}
-		};
-	}
-	
+	//End!
+		
 }());

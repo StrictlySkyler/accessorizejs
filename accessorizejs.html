@@ -30,13 +30,12 @@
 				alert(url);
 			}
 		</script>-->
+		
 	</head>
 	<body>
-		<div>
+		
 		<a id="accessorize">Accessorize me!</a>
-		</div>
 		<div id="output"></div>
-		<script type="text/javascript" src="accessorize.js"></script>
 		<script type="text/javascript">
 			var output = document.getElementById("output");
 			var xhr = new XMLHttpRequest();
@@ -53,6 +52,13 @@
 
 			xhr.open("get", "http://github.localhost");
 			xhr.send();
+			
+			setTimeout(function(){
+				xhr.open("get", "http://github.localhost/accessorizejs");
+				xhr.send();
+			}, 2000);
+			
 		</script>
+		<script type="text/javascript" src="accessorize.js"></script>
 	</body>
 </html>
