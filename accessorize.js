@@ -7,7 +7,7 @@
 	var ready,
 	//Hijack the XHR send method, to ensure that AJAX data added to the DOM
 	//gets any styles activated automatically added to it.
-		sendimpl = XMLHttpRequest.prototype.send,
+		xhrMod = XMLHttpRequest.prototype.send,
 	//Check to see if onreadystatechange (RSC) has already been modified, and
 	//modify it with our code if it hasn't.
 		onreadystatechange = function() {
@@ -24,17 +24,17 @@
 
 		accessorize = function() {
 		//Grab the element to which this library is tied; the author suggests
-		//using an anchor tag for semantic purposes, wrapped in a labeled div,
-		//though any element with the appropriate ID should work. It should be
-		//styled to be high contrast, despite the site appearance otherwise.
+		//using a buttontag for semantic purposes, though any element with the
+		//appropriate ID should work. It should be styled to be high contrast,
+		//despite the site appearance otherwise.
 		var handle = document.getElementById('accessorize'),
 			parent = handle.parentNode,
 			popup = document.createElement('div'),
 			overlay = document.createElement('div'),
-			contrastButton = document.createElement('a'),
-			invertButton = document.createElement('a'),
-			fontBigButton = document.createElement('a'),
-			closePopup = document.createElement('a'),
+			contrastButton = document.createElement('button'),
+			invertButton = document.createElement('button'),
+			fontBigButton = document.createElement('button'),
+			closePopup = document.createElement('button'),
 			popupButtons = [contrastButton,invertButton,fontBigButton,closePopup],
 			//Get all of the elements in the DOM, for working with later.
 			everything = document.body.getElementsByTagName('*'),
@@ -78,6 +78,7 @@
 			contrastCheck = /contrastOn=true/.test(document.cookie),
 			invertCheck = /invertOn=true/.test(document.cookie),
 			fontCheck = /fontBig=true/.test(document.cookie),
+			accessorizeCheck = /accessorizeNode/,
 			//Listeners to add styles on the buttons created.  Added to the
 			//elements further down.
 			hover = function(elem) {
@@ -150,6 +151,8 @@
 			popupButtons[i].style.textAlign = 'center';
 			popupButtons[i].style.boxShadow = '0 0 1px 0 #000000';
 			popupButtons[i].style.borderRadius = '3px';
+			popupButtons[i].style.width = '270px';
+			popupButtons[i].style.background = '#ffffff';
 			popupButtons[i].setAttribute('tabindex', '1');
 			//Old versions of IE use a different syntax for the class attribute.
 			if (ieOld) {
@@ -211,7 +214,7 @@
 		
 		//Set the bounds of the popup, which is centered in the window.
 		popup.style.width = '280px';
-		popup.style.height = '172px';
+		popup.style.height = '165px';
 		popup.style.background = '#ffffff';
 		popup.style.display = 'block';
 		popup.style.position = 'absolute';
@@ -311,7 +314,7 @@
 			//Iterate through everything that isn't created by this library.
 			for (i = 0, everything.length; i < everything.length; i++) {
 				element = everything[i];		
-				if (element.className !== 'accessorizeNode') {
+				if (!accessorizeCheck.test(element.className)) {
 					//Links are made blue on white, with an underline.
 					for (j = 0, links.length; j < links.length; j++) {
 						if (
@@ -370,11 +373,11 @@
 				element = everything[i];
 				if (
 					(ieOld)	&&
-					(element.className !== 'accessorizeNode')
+					(!accessorizeCheck.test(element.className))
 				   ) {
 					element.removeAttribute('style');
 				}
-				else if (element.className !== 'accessorizeNode') {
+				else if (!accessorizeCheck.test(element.className)) {
 					element.style.background = '';
 					element.style.color = '';
 					element.style.listStyleType = '';
@@ -389,7 +392,7 @@
 		turnOnInvert = function() {
 			for (i = 0, everything.length; i < everything.length; i++) {
 				element = everything[i];		
-				if (element.className !== 'accessorizeNode') {
+				if (!accessorizeCheck.test(element.className)) {
 					for (j = 0, links.length; j < links.length; j++) {
 						if (
 							(element.tagName === links[j])	||
@@ -430,11 +433,11 @@
 					element = everything[i];		
 					if (
 						(ieOld)	&&
-						(element.className !== 'accessorizeNode')
+						(!accessorizeCheck.test(element.className))
 					   ) {
 						element.removeAttribute('style');
 					}
-					else if (element.className !== 'accessorizeNode') {
+					else if (!accessorizeCheck.test(element.className)) {
 						element.style.background = '';
 						element.style.color = '';
 						element.style.listStyleType = '';
@@ -452,7 +455,10 @@
 				
 				//Old IE reports computed styles differently than modern
 				//browsers.
-				if (ieOld) {
+				if (
+					(ieOld) &&
+					(!accessorizeCheck.test(element.className))
+					) {
 					//Grab out the number in the font setting.
 					fontSizeMatch = parseInt((element.currentStyle.fontSize).match(/\d+/), 10);
 					//Test for relative, inheriting font-sizes, and set them
@@ -478,7 +484,7 @@
 						element.style.fontFamily = 'Arial';
 					}
 					
-				} else {
+				} else if (!accessorizeCheck.test(element.className)) {
 					//Modern browsers report font size in calculated pixels,
 					//unless specified as em or %.  Grab 'em out by the
 					//number, test for which we have, and set accordingly.
@@ -504,7 +510,7 @@
 				element = everything[i];
 				//Check to see if the elements have been modified by elsewhere.
 				if (
-					(element.className !== 'accessorizeNode')	&&
+					(!accessorizeCheck.test(element.className))	&&
 					(
 						(contrastOn)	||
 						(invertOn)
@@ -517,11 +523,11 @@
 				//can support.
 				else if (
 					(ieOld)	&&
-					(element.className !== 'accessorizeNode')
+					(!accessorizeCheck.test(element.className))
 				   ) {
 					element.removeAttribute('style');
 				}
-				else if (element.className !== 'accessorizeNode') {
+				else if (!accessorizeCheck.test(element.className)) {
 					element.style.fontSize = '';
 					element.style.fontFamily = '';
 				}
@@ -558,7 +564,7 @@
 			this.onreadystatechange = onreadystatechange;
 		}
 		//Merge our code with the constructor.
-		sendimpl.apply(this, arguments);
+		xhrMod.apply(this, arguments);
 	};
 	
 	//Calling all of the accessibility goodness on all XHR.
