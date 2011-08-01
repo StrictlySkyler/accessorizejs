@@ -86,7 +86,7 @@ pre {
 
 textarea { overflow: auto; } /* www.sitepoint.com/blogs/2010/08/20/ie-remove-textarea-scrollbars/ */
 
-.ie6 legend, .ie7 legend { margin-left: -7px; } 
+.ie6 legend, .ie7 legend { margin-left: -7px; }
 
 /* Align checkboxes, radios, text inputs with their label by: Thierry Koblentz tjkdesign.com/ez-css/css/base.css  */
 input[type="radio"] { vertical-align: text-bottom; }
@@ -111,8 +111,8 @@ input:invalid, textarea:invalid {
 /* These selection declarations have to be separate
    No text-shadow: twitter.com/miketaylr/status/12228805301
    Also: hot pink! */
-::-moz-selection{ background: #FF5E99; color:#fff; text-shadow: none; }
-::selection { background:#FF5E99; color:#fff; text-shadow: none; }
+::-moz-selection{ background: #fc0; color:#000; text-shadow: none; }
+::selection { background:#fc0; color:#000; text-shadow: none; }
 
 /* j.mp/webkit-tap-highlight-color */
 a:link { -webkit-tap-highlight-color: #FF5E99; }
@@ -130,34 +130,99 @@ button {  width: auto; overflow: visible; }
  */
 
 body, select, input, textarea {
-  /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
-  color: #444;
-  /* Set your base font here, to apply evenly */
-  /* font-family: Georgia, serif;  */
+	font: normal 18px/24px Arial;
+	color: #fff;
+	text-shadow: 1px 1px 0px #000;
 }
 
-/* Headers (h1, h2, etc) have no default font-size or margin; define those yourself */
-h1, h2, h3, h4, h5, h6 { font-weight: bold; }
+a,
+a:active,
+a:visited {
+	color: #08f;
+	text-decoration: none;
+	border-bottom: 1px dotted #08f;
+}
 
-a, a:active, a:visited { color: #607890; }
-a:hover { color: #036; }
+a:hover {
+	color: #0cf;
+	border-bottom: 1px solid #0cf;
+}
 
 
 /**
  * Primary styles
  *
- * Author: 
+ * Author:
  */
 
+html {
+	background: #444;
+	box-shadow: inset 0 0 30px #000;
+	min-height: 100%;
+	padding: 0 0 100px;
+}
+
+.content {
+	width: 1024px;
+	margin: 0 auto 0;
+}
+
+h1 {
+	font: bold 52px/52px Arial;
+	color: #fc0;
+	text-shadow: 1px 1px 0px #000, 2px 2px 0px #000, 3px 3px 0px #000;
+}
+
+h2 {
+	font: bold 32px/48px Arial;
+	color: #fff;
+	text-shadow: 1px 1px 0px #000, 2px 2px 0px #000, 3px 3px 0px #000;
+}
+
+h3 {
+	font: bold 24px/32px Arial;
+	color: #fff;
+	margin: 0 0 5px;
+	text-shadow: 1px 1px 0px #000, 2px 2px 0px #000, 3px 3px 0px #000;
+}
+
+p {
+	margin: 0 0 10px;
+}
+
+ul {
+	margin: 0 0 10px 30px;
+}
+
+em {
+	font-style: italic;
+}
+
+strong {
+	color: #ffb;
+}
+
+span {
+	color: #fc0;
+}
+
+code {
+	color: #d9f;
+}
+
+.header {
+	margin: 30px 0 20px;
+}
+
 .floating-tab {
-	float: right;
-	position: static;
-	margin: 50px 0 0;
-	background: #333;
+	right: 0;
+	top: 50px;
+	position: fixed;
+	background: #000;
 	border: 5px dashed #fff;
 	border-right: none;
 	font: bold 18px/18px Arial;
-	padding: 10px;
+	padding: 5px;
 	border-radius: 25px 0 0 25px;
 	color: #fc0;
 }
@@ -167,7 +232,13 @@ a:hover { color: #036; }
 	border-right: none;
 }
 
-
+.footer {
+	margin: 50px 0 0;
+	float: right;
+	font: normal 10px/10px Arial;
+	text-shadow: none;
+	color: #999;
+}
 
 
 
@@ -216,21 +287,17 @@ a:hover { color: #036; }
  * These follow after primary styles so they will successfully override.
  */
 
-@media all and (orientation:portrait) {
-  /* Style adjustments for portrait mode goes here */
-
-}
-
-@media all and (orientation:landscape) {
-  /* Style adjustments for landscape mode goes here */
-
-}
-
 /* Grade-A Mobile Browsers (Opera Mobile, Mobile Safari, Android Chrome)
    consider this: www.cloudfour.com/css-media-query-for-mobile-is-fools-gold/ */
-@media screen and (max-device-width: 480px) {
+@media (max-device-width: 480px) {
+	html {
+		box-shadow: inset 0 0 10px #000;
+	}
 
-
+	.content {
+		width: auto;
+		margin: 0 10px 0;
+	}
   /* Uncomment if you don't want iOS and WinMobile to mobile-optimize the text for you: j.mp/textsizeadjust */
   /* html { -webkit-text-size-adjust:none; -ms-text-size-adjust:none; } */
 }
@@ -255,4 +322,3 @@ a:hover { color: #036; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3{ page-break-after: avoid; }
 }
-
