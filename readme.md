@@ -4,7 +4,7 @@ Accessorize.js is a JavaScript library meant to help make the web more accessibl
 
 The ultimate goal of accessorize.js is to become a turnkey solution to help web developers make sites that are WCAG 2.0 AA compliant without sacrificing the awesome presentational stuff that came about with the rise of Web 2.0 (and beyond).
 
-#How It Works#
+##How It Works##
 To use accessorize.js, include it into the markup of a webpage -- preferably just before the end of the `<body>` tag. Then, add a button or a link elsewhere with the "accessorize" id and the "accessorizeNode" class. (Any element with the accessorizeNode class will be ignored when the library modifies the styles on the page.)
 
 When the element with the accessorize id is clicked, it will provide an overlay to enable or disable various viewing modes aimed at making websites easier to read for people with vision impairment.
