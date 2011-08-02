@@ -601,7 +601,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			//Check to see if these are already enabled on another page, and
 			//enable them here if they are.
 			if (contrastCheck) {
-				constrastOn = true;
+				contrastOn = true;
 				turnOnContrast();
 			}
 
