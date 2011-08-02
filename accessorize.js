@@ -92,6 +92,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			//Declare some things we'll use later.
 			i,
 			j,
+			len,
+			len2,
 			element,
 			contrastOn = false,
 			invertOn = false,
@@ -180,7 +182,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			//Iterating through the buttons on the popup, adding them to the
 			//popup, setting some styles on them, and making them keyboard
 			//navigable.
-			for (i = 0, popupButtons.length; i < popupButtons.length; i++) {
+			for (i = 0, len = popupButtons.length; i < len; i++) {
 				popup.appendChild(popupButtons[i]);
 				popupButtons[i].style.cursor = 'pointer';
 				popupButtons[i].style.padding = '5px';
@@ -205,7 +207,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 			//Set a common style for the buttons, and add the earlier event
 			//listeners.
-			for (i=0, popupButtons.length; i < popupButtons.length - 1; i++) {
+			for (i = 0, len = popupButtons.length; i < len - 1; i++) {
 				popupButtons[i].style.color = '#000000';
 				hover(popupButtons[i]);
 			}
@@ -365,11 +367,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 		turnOnContrast = function() {
 			//Iterate through everything that isn't created by this library.
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 				element = everything[i];
 				if (!accessorizeCheck.test(element.className)) {
 					//Links are made blue on white, with an underline.
-					for (j = 0, links.length; j < links.length; j++) {
+					for (j = 0, len2 = links.length; j < len2; j++) {
 						if (
 							(element.tagName === links[j])	||
 							(element.parentNode.tagName === links[j])
@@ -380,7 +382,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						}
 					}
 					//Content elements are made black on white.
-					for (j = 0, content.length; j < content.length; j++) {
+					for (j = 0, len2 = content.length; j < len2; j++) {
 						if (element.tagName === content[j]) {
 							element.style.background = '#ffffff';
 							element.style.color = '#000000';
@@ -391,7 +393,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					//Box-shadow is used instead of border, since border will
 					//modify the layout.  Old IE just jusn't get this, since
 					//this many filters is performance intensive.
-					for (j = 0, blocks.length; j < blocks.length; j++) {
+					for (j = 0, len2 = blocks.length; j < len2; j++) {
 						if (element.tagName === blocks[i]) {
 							element.style.background = '#ffffff';
 							element.style.boxShadow = '0 0 0 1px #333333';
@@ -399,7 +401,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 					}
 					//Lists with custom bullets are forced to look
 					//high-contrast.
-					for (j = 0, lists.length; j < lists.length; j++) {
+					for (j = 0, len2 = lists.length; j < len2; j++) {
 						if (element.tagName === lists[j]) {
 							element.style.background = '#ffffff';
 							element.style.color = '#000000';
@@ -423,7 +425,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			//browsers will fall back to the default site styles.  If
 			//you're setting your styles inline by hand, stop it and go get a
 			//stylesheet.
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 				element = everything[i];
 				if (
 					(ieOld)	&&
@@ -445,10 +447,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		//End turnOnContrast
 
 		turnOnInvert = function() {
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 				element = everything[i];
 				if (!accessorizeCheck.test(element.className)) {
-					for (j = 0, links.length; j < links.length; j++) {
+					for (j = 0, len2 = links.length; j < len2; j++) {
 						if (
 							(element.tagName === links[j])	||
 							(element.parentNode.tagName === links[j])
@@ -458,20 +460,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 							element.style.textDecoration = 'underline';
 						}
 					}
-					for (j = 0, content.length; j < content.length; j++) {
+					for (j = 0, len2 = content.length; j < len2; j++) {
 						if (element.tagName === content[j]) {
 							element.style.background = '#000000';
 							element.style.color = '#ffffff';
 							element.style.borderRadius = '3px';
 						}
 					}
-					for (j = 0, blocks.length; j < blocks.length; j++) {
+					for (j = 0, len2 = blocks.length; j < len2; j++) {
 						if (element.tagName === blocks[i]) {
 							element.style.background = '#000000';
 							element.style.boxShadow = '0 0 0 1px #cccccc';
 						}
 					}
-					for (j = 0, lists.length; j < lists.length; j++) {
+					for (j = 0, len2 = lists.length; j < len2; j++) {
 						if (element.tagName === lists[j]) {
 							element.style.background = '#000000';
 							element.style.color = '#ffffff';
@@ -485,7 +487,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		//End turnOnInvert
 
 		turnOffInvert = function() {
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 					element = everything[i];
 					if (
 						(ieOld)	&&
@@ -507,7 +509,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		//End turnOffInvert
 
 		turnOnFont = function() {
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 				element = everything[i];
 
 				//Old IE reports computed styles differently than modern
@@ -565,7 +567,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 		//End turnOnFont
 
 		turnOffFont = function() {
-			for (i = 0, everything.length; i < everything.length; i++) {
+			for (i = 0, len = everything.length; i < len; i++) {
 				element = everything[i];
 				//Check to see if the elements have been modified by elsewhere.
 				if (
@@ -601,7 +603,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 			//Check to see if these are already enabled on another page, and
 			//enable them here if they are.
 			if (contrastCheck) {
-				constrastOn = true;
+				contrastOn = true;
 				turnOnContrast();
 			}
 
