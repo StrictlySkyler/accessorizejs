@@ -22,7 +22,8 @@ Down the road, the following features are planned for implementation:
 *	Catching links and content that makes no sense when taken out of context
 *	Expose the ability to trigger the library from other scripts
 *	Anything else I haven't thought of!
-*	Enabling "High Contrast" attempts to turn all of the textual content on a site black in color with a white background, turn links and buttons blue with an underline, and to outline many structural block-level elements with a minimal shadow.
+
+Enabling "High Contrast" attempts to turn all of the textual content on a site black in color with a white background, turn links and buttons blue with an underline, and to outline many structural block-level elements with a minimal shadow.
 
 The "Invert Contrast" feature works just like the High Contrast feature, except that the content turns white with a black background, and the links turn yellow.
 
