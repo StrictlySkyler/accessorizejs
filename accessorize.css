@@ -163,8 +163,9 @@ html {
 }
 
 .content {
-	width: 1024px;
-	margin: 0 auto 0;
+	width: 984px;
+	margin: 0 auto;
+	padding: 0 20px;
 }
 
 h1 {
@@ -219,7 +220,7 @@ code {
 	top: 50px;
 	position: fixed;
 	background: #000;
-	border: 5px dashed #fff;
+	border: 5px dotted #fff;
 	border-right: none;
 	font: bold 18px/18px Arial;
 	padding: 5px;

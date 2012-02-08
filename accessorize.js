@@ -1,6 +1,7 @@
 /*
-Accessorize.js is a JavaScript utility to help make webpages accessible to users
-with visual impairment and other disabilities.
+Accessorize.js is a JavaScript utility to help make webpages accessible to
+users with visual impairment and other disabilities.
+
 Copyright (C) 2011 Skyler Brungardt & Jeff Ritenburg
 
 This program is free software: you can redistribute it and/or modify
